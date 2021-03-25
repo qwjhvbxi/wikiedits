@@ -1,0 +1,214 @@
+<html>
+<head>
+<script src="MediawikiJS.js"></script>
+</head>
+
+<div id="demo"></div>
+<svg id="dispsvg"></svg>
+
+<script>
+
+function vai(y) {
+
+	var mwjs = MediaWikiJS('https://en.wikipedia.org');
+	var cont;
+	var contdate = 20190101000000;
+	//var enddate = 20180101000000;
+	var enddate = 20181101000000;
+	var sa=0;
+	while (contdate>enddate) {
+	//'2019-01-01T00:00:00'
+		mwjs.send({action: 'query', list: 'usercontribs', ucuser: 'Ita140188', uclimit: 30, ucstart: contdate, ucprop: 'timestamp|sizediffprop|flags'}, function (data) {
+
+			var timestmp = data.query.usercontribs[0].timestamp;
+			
+			cont = data.continue.uccontinue;
+			contdate = parseInt(cont.slice(0,14));
+			console.log(contdate);
+			
+			data.query.usercontribs.forEach(estrai)
+			sa++;
+			if (sa>5) {
+			break;
+			}
+	
+		});
+	}
+}
+
+function createc(y) {
+c=[];
+c[y]=[];
+for (i=0;i<12;i++) {
+	
+	c[y][i]=[];
+	
+	for (j=0;j<31;j++) {
+	
+		c[y][i][j]=0;
+	
+	}
+	}
+}
+
+//c=[[[]]];
+//current=[0,0,0];
+
+function estrai(item, index, arr) {
+
+	timestmp=item.timestamp;
+	var y=timestmp.slice(2,4)
+	var m=parseInt(timestmp.slice(5,7),10)-1;
+	var d=parseInt(timestmp.slice(8,10),10)-1;
+		
+	/*
+	if (y!=current[0]) {
+		current[0]=y;
+		c[y]=[];
+	}
+	if (m!=current[1]) {
+		current[1]=m;
+		c[y][m]=[];
+	}
+	if (d!=current[2]) {
+		current[2]=d;
+		c[y][m][d]=0;
+	}
+	*/
+	
+	c[y][m][d]++;
+	//console.log(item.timestamp);
+
+
+}
+
+function getMax(a){
+  return Math.max(...a.map(e => Array.isArray(e) ? getMax(e) : e));
+}
+
+function calcmax(a) {
+
+var maxRow = a.map(function(row){ return Math.max.apply(Math, row); });
+var max = Math.max.apply(null, maxRow);
+return max;
+
+}
+
+function createtable(y) {
+	
+	var s=document.getElementById('dispsvg');
+	var q=10;
+	var edits;
+	s.style.width=((q+1)*54)+'px';
+	s.style.height=((q+1)*7)+'px';
+	console.log(y);
+	var maxedits=getMax(c[y]);
+	console.log(maxedits);
+	var basecolor=235;
+	var colore;
+	
+	for (i=1;i<=365;i++) {
+		
+		d=new Date(2000+y,00,i);
+		
+		w=d.getDay();
+		if (w==0) { w=7; }
+		w=w-1;
+		
+		Y=y;
+		M=d.getMonth();
+		D=d.getDate()-1;
+		
+		//(typeof lastname !== "undefined")
+		
+		edits=c[Y][M][D];
+		
+		colore=basecolor-edits/maxedits*basecolor;
+		
+		var dayrect = document.createElementNS("http://www.w3.org/2000/svg", 'rect');
+		dayrect.setAttribute("height",q);
+		dayrect.setAttribute("width",q);
+		dayrect.setAttribute("transform","translate("+(Math.floor((i-w)/7)*(q+1))+","+(w*(q+1))+")");
+		//dayrect.style.stroke = "#fff"; //Set stroke colour
+		dayrect.style.fill = "rgb("+colore+","+basecolor+","+colore+")";
+		dayrect.style.strokeWidth = "0px"; //Set stroke width
+		s.appendChild(dayrect);
+	}
+
+}
+
+var y=18;
+createc(y)
+vai(y)
+	createtable(y);
+
+url='https://en.wikipedia.org/w/api.php?action=query&list=usercontribs&ucuser=Ita140188&uclimit=3&ucprop=timestamp|sizediff';
+
+/*
+
+function createCORSRequest(method, url) {
+  var xhr = new XMLHttpRequest();
+  if ("withCredentials" in xhr) {
+
+    // Check if the XMLHttpRequest object has a "withCredentials" property.
+    // "withCredentials" only exists on XMLHTTPRequest2 objects.
+    xhr.open(method, url, true);
+
+  } else if (typeof XDomainRequest != "undefined") {
+
+    // Otherwise, check if XDomainRequest.
+    // XDomainRequest only exists in IE, and is IE's way of making CORS requests.
+    xhr = new XDomainRequest();
+    xhr.open(method, url);
+
+  } else {
+
+    // Otherwise, CORS is not supported by the browser.
+    xhr = null;
+
+  }
+  return xhr;
+}
+
+
+
+var xhr = createCORSRequest('GET', url);
+if (!xhr) {
+  throw new Error('CORS not supported');
+}
+
+
+
+xhr.onload = function() {
+ var responseText = xhr.responseText;
+ console.log(responseText);
+ // process the response.
+};
+
+xhr.onerror = function() {
+  console.log('There was an error!');
+};
+
+
+
+xhr.send();
+
+
+
+/*
+var xhttp = new XMLHttpRequest();
+xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+       // Typical action to be performed when the document is ready:
+       document.getElementById("demo").innerHTML = xhttp.responseText;
+    }
+};
+xhttp.open("POST", "https://en.wikipedia.org/w/api.php?action=query&list=usercontribs&ucuser=Ita140188&uclimit=3&ucprop=timestamp|sizediff|flags", true);
+xhttp.send();
+*/
+
+
+
+</script>
+
+</html>

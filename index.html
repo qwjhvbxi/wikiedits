@@ -1,0 +1,26 @@
+<html>
+<head>
+<script src="MediawikiJS.js"></script>
+<script src="calendar.js"></script>
+<script src="editcount.js"></script>
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<div id="in-container">
+<input type="text" id="username"></input><input id="manda" type="submit" value="show" onclick="startCalendar()"></input></form>
+</div>
+<div id="calendar-container"></div>
+
+<script>
+
+var input = document.getElementById("username");
+input.addEventListener("keyup", function(event) {
+	if (event.keyCode === 13) {
+		event.preventDefault();
+		document.getElementById("manda").click();
+	}
+});
+
+</script>
+
+</html>
