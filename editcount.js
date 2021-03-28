@@ -5,7 +5,8 @@ function startCalendar() {
 	
 	User=jsUcfirst(document.getElementById('username').value);
 	console.log(User)
-	document.getElementById('calendar-container').innerHTML = "";
+	ccontainer=document.getElementById('calendar-container');
+	ccontainer.innerHTML = "<br/><br/>loading...<br/><img src='loader.gif' width='200' />";
 	
 	var today = new Date();
 	var hr = String(today.getHours()).padStart(2, '0');
@@ -26,6 +27,7 @@ function startCalendar() {
 		calData=JSON.parse(localStorage.getItem("calData_"+User));
 	}
 	
+	LL=0;
 	wikicall(st,en,0)
 	
 }
@@ -55,6 +57,14 @@ function wikicall(st,en,cont) {
 		// console.log(data)
 		data.query.usercontribs.forEach(estrai2)
 		if (data.continue) {
+			/*
+			if (LL) {
+				ccontainer.innerHTML = "loading... &#x25CF; &#x25CB;";
+			} else {
+				ccontainer.innerHTML = "loading... &#x25CB; &#x25CF;";
+			}
+			LL=1-LL;
+			*/
 			wikicall(st,en,data['continue']);
 			console.log('continuing...')
 		} else {
@@ -65,6 +75,7 @@ function wikicall(st,en,cont) {
 				localStorage.setItem("latest_"+User, lastEdit);
 				localStorage.setItem("calData_"+User, JSON.stringify(calData));
 			}
+			ccontainer.innerHTML = "";
 			generateCalendar(calData);
 		}
 	});
@@ -105,4 +116,18 @@ function objMax(a) {
 function jsUcfirst(string) 
 {
     return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+function saveSvg(svgEl, name) {
+    svgEl.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+    var svgData = svgEl.outerHTML;
+    var preface = '<?xml version="1.0" standalone="no"?>\r\n';
+    var svgBlob = new Blob([preface, svgData], {type:"image/svg+xml;charset=utf-8"});
+    var svgUrl = URL.createObjectURL(svgBlob);
+    var downloadLink = document.createElement("a");
+    downloadLink.href = svgUrl;
+    downloadLink.download = name;
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
 }

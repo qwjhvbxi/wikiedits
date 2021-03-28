@@ -12,13 +12,6 @@ body {
   font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
 }
 
-#in-container {
-  display: block;
-  margin: 0 auto;
-  text-align: center;
-  font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
-}
-
 input{
 	border:0px;
 	background:#333;
@@ -27,6 +20,14 @@ input{
 	padding:3px;
 }
 
+#in-container {
+  display: block;
+  margin: 0 auto;
+  text-align: center;
+  font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+}
+
+/*
 svg {
   width: 720px;
   height: 140px;
@@ -49,3 +50,4 @@ svg {
     stroke: $calendar-bordercolor;
   }
 }
+*/

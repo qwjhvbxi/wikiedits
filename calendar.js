@@ -193,7 +193,7 @@ function generateCalendar(calData) {
     const svg = document.createElementNS(svgNS, 'svg');
     svg.id = 'calendar';
     svg.setAttribute('width', '720px');
-    svg.setAttribute('height', '130px');
+    svg.setAttribute('height', '140px');
     document.getElementById('calendar-container').appendChild(svg);
 
     // main group that contains everything within svg
@@ -204,9 +204,15 @@ function generateCalendar(calData) {
 	const leg = document.createElementNS(svgNS, 'g');
 	leg.setAttribute('transform', 'translate(20,130)');
 	svg.appendChild(leg);
-		
-
+	
+	var Style="* {font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;} .calendar-monthname { font-size: 10px; fill: $calendar-textlabelcolor;} .calendar-daylabel {  fill: $calendar-textlabelcolor;  font-size: 10px;  text-anchor: middle;}	.calendar-day {	  &:hover {	stroke: $calendar-bordercolor;	  }	}";
+	var styleElement = document.createElementNS(svgNS, "style");
+	styleElement.textContent = Style; 
+	svg.appendChild(styleElement);
+	
 	drawLegend2();
     drawCalendar();
 
+	saveSvg(svg, 'test.svg')
+	
 }
